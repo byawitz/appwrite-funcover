@@ -1,0 +1,20 @@
+{
+  "name": "appwrite-funcover",
+  "version": "1.0.0",
+  "description": "Cover your Appwrite function(s) and provide a direct endpoint!",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "export NODE_ENV=production && bun run index.ts",
+    "dev": "bun --watch index.ts"
+  },
+  "keywords": [],
+  "author": "BoolCode",
+  "license": "MIT",
+  "dependencies": {
+    "hono": "^3.2.5"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  }
+}
