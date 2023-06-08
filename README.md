@@ -2,9 +2,9 @@
 
 > Right before Appwrite's [releasing](https://github.com/appwrite/appwrite/discussions/5016) next gen (4) of their functions, You can cover your Appwrite function with a dedicated endpoint!
 
-With Funcover you can `cover` your function with domain you want. That means that you'll be able to access your [Appwrite functions](https://appwrite.io/docs/functions) one or all of them using and endpoint you want.
+With Funcover you can `cover` your function with any domain you want. That means that you'll be able to access one of your [Appwrite functions](https://appwrite.io/docs/functions)  or all of them using any endpoint you want.
 
-This feature will help you use Appwrite as a target-webhook, direct access without the need to provide project id, And also simply, for your convince.
+This feature will help you use Appwrite functions as a target-webhook, direct access URL (without the need to provide project id), And also simply, for your convince.
 
 ## Funcover is built with:
 
@@ -15,11 +15,11 @@ This feature will help you use Appwrite as a target-webhook, direct access witho
 ## Funcover features
 
 - [x] Access your Appwrite function through a GET request.
-- [x] User your Appwrite function as a WebHook.
+- [x] User your Appwrite function as a Webhook.
 - [x] Passing all request headers.
 - [x] Passing all request Body/Form/Json data.
 - [x] Passing `data` query variable in GET requests.
-- [x] Can be used for single or all of your functinos.
+- [x] Can be used for single or all of your functions.
 - [ ] Passing API Key.
 
 ## Installation
@@ -28,7 +28,7 @@ Funcover meant to be added to your current [self-hosted](https://appwrite.io/doc
 
 #### SSL
 
-Before adding Funcover you'll need make sure the domain you're planning to use will have SSL, To do so we're harnessing Appwrite [custom-domain](https://appwrite.io/docs/custom-domains) feature.
+Before adding Funcover you'll need make sure that the domain you're planning to use will have SSL, To do so we're harnessing Appwrite [custom-domain](https://appwrite.io/docs/custom-domains) feature.
 
 After adding your domain as custom-domain to any of your Appwrite project, and, the domain is now pointing to your Appwrite instance you can move to the next step.
 
@@ -36,7 +36,7 @@ After adding your domain as custom-domain to any of your Appwrite project, and, 
 
 SSH into your server and edit your `docker-compose.yml` file.
 
-At the bottom of the file right after the `telegraph` service, and, right before the `networks` section add the following.
+At the bottom of the file right after the `telegraf` service, and, right before the `networks` section add the following.
 
 ```yaml
   funcover:
@@ -71,14 +71,14 @@ Look [here](docker-compose.yml) for a complete example.
 <details>
 <summary>What is going on that snippet, what we just did??</summary>
 
-We have added a new service into docker-compose, and this is a quick overview of the fields.
+We have added a new service into the docker-compose.yml file, And, Here's a quick overview of the fields.
 
-- image - The name of the Docker image we are using for this service.
-- container_name - The name of the container. useful for logs and monitoring.
-- restart - Container restart policy. We have set it to `unless-stopped` so unless we're stopping it Docker will make sure the service is on.
-- environment - Here we're passing some values to be handled by Funcover at runtime. This is the best way to customize docker images without the need to rebuild them.
-- networks - Here we're connecting Funcover to `appwrite` network.
-- labels - Labels are piece of information that can be used by other containers in our case the `traefik` one.
+- `image` - The name of the Docker image we are using for this service.
+- `container_name` - The name of the container. useful for logging and monitoring.
+- `restart` - Container restart policy. We have set it to `unless-stopped`, So, unless we're stopping it Docker will make sure the service is on.
+- `environment` - Here we're passing some values to be handled by Funcover at runtime. This is the best way to customize docker images without the need to rebuild them.
+- `networks` - Here we're connecting Funcover to `appwrite` network.
+- `labels` - Labels are piece of information that can be used by other containers,In this case the `traefik` one.
 
 Do notice the service rule (for http & https)
 
@@ -88,13 +88,13 @@ Do notice the service rule (for http & https)
 
 We are setting two conditions for the rule.
 
-1. Host - We want to match the host to access Funcover.
-2. PathPrefix - Adding this part is important for the case we want Funcover to be able to parse all requests with no routes.
+1. **Host** - We want to match the host to access Funcover.
+2. **PathPrefix** - Adding this part is important for the case we want Funcover to be able to parse all requests with no routes.
 
 _**Be aware** that when you're upgrading Appwrite this addition will be erased._
 </details>
 
-Now it's time to reload our Docker Compose environment.
+Now it's time to reload our Docker Compose environment by running,
 
 ```shell
 docker compose up -d
@@ -102,7 +102,7 @@ docker compose up -d
 
 ### Usages
 
-Now any time you'll access the custom domain your default function in you default project will run and, will return back the execution JSON. Just like you've used the [createExecution](https://appwrite.io/docs/client/functions?sdk=web-default#functionsCreateExecution) function.
+Now any time you'll access the custom-domain, your default function in your default project will run, And, Will return back the execution JSON. Just like you've used the [createExecution](https://appwrite.io/docs/client/functions?sdk=web-default#functionsCreateExecution) function.
 
 ```json
 {
@@ -123,16 +123,17 @@ Now any time you'll access the custom domain your default function in you defaul
 }
 ```
 
-Passing data to the function can be done in any of the follow four ways.
+Passing data to the function can be done in any of the following four ways.
 
 1. GET `data` variable. `https://custom.domain.com/?data=repoReload`
 2. POST using raw data with `application/json` content type.
 3. POST using form-data.
 4. POST using application/x-www-form-urlencoded.
 
-In request of type POST Funcover will check first for raw JSON data before checking for `form-data` or `application/x-www-form-urlencoded`.
+#### Note for POST
+Funcover will check first for raw JSON data before checking for `form-data` or `application/x-www-form-urlencoded`.
 
-In any of the POST request you can use a filed named `rawData` to pass data directly to `data` key. Here's an example in JSON
+Also, You can use a filed named `rawData` to pass data directly to `data` key. Here's an example in JSON
 
 ```json
 {
@@ -148,7 +149,7 @@ This data will be sent to the function like so:
 }
 ```
 
-As in any other case, that for example:
+As in any other case, this one for example:
 
 ```json
 {
@@ -156,7 +157,7 @@ As in any other case, that for example:
 }
 ```
 
-This data will be sent to the function completely, like so:
+The data will be sent to the function completely, like so:
 
 ```json
 {
@@ -166,7 +167,7 @@ This data will be sent to the function completely, like so:
 
 #### Logs
 
-Funcover don't produce any logs at runtime. In case you want to debug Funcover steps or you just want to know more you can pass the `VERBOSE` environment variable in the `docker-compose.yml` file.
+Funcover don't produce any logs at runtime. In case you want to debug Funcover steps, or you just want to know more, You can pass the `VERBOSE` environment variable in the `docker-compose.yml` file.
 
 Then you'll be able to see the logs by running
 
@@ -182,15 +183,15 @@ Funcover can be used for a single function by setting the `DEFAULT_PROJECT` & `D
 
 Also, Funcover can be used to handle all of your functions by project and function ID.
 
-To do so you'll need to set the `ALLOW_GLOBAL` variable as `true` and reloading your Docker Compose environment.
+To do so you'll need to set the `ALLOW_GLOBAL` variable as `true` and reload your Docker Compose environment.
 
-Now you'll be able to access any of your functions with the following route.
+Now you'll be able to access any of your functions by using the following route.
 
 ```
 https://custom.domain.com/projectId/functionId/
 ```
 
-You can use pass the data and use this endpoint as the first one.
+Also, here, You pass the data in GET or POST as in the default function endpoint.
 
 #### Multiple instances.
 
@@ -200,11 +201,11 @@ In the attached [example](docker-compose.yml) you can see how to set a second Fu
 
 #### Rate limiting & Permissions
 
-As of now Funcover uses the [REST](https://appwrite.io/docs/rest) [Client-side](https://appwrite.io/docs/sdks#client) SDK that mean that each function will hit their client rate-limit after 60 execution in a given minute.
+As of now Funcover uses the [REST](https://appwrite.io/docs/rest) [Client-side](https://appwrite.io/docs/sdks#client) SDK. That mean that each function will hit their client rate-limit after 60 execution in a given minute.
 
 For most use-cases that will more than enough.
 
-Also, because Funcover execute the function through Client-side, Make sure you're adding Any execution for your function permissions.
+Also, because Funcover execute the function through Client-side, Make sure you're adding the `Any` execution permission for your function permissions.
 
 ### Environment variables
 
@@ -222,7 +223,7 @@ When sets to `true` Funcover will handle all of your function by project id.
 
 Set as your Appwrite endpoint.
 
-Funcover will work even if you didn't provide and endpoint, As Funcover will access the main Appwrite container through Docker-network internal host name `http://appwrite/v1`.
+Funcover will work even if you didn't provide any endpoint, As Funcover will access the main Appwrite container through Docker-network internal host url, `http://appwrite/v1`.
 
 #### `DEFAULT_PROJECT`
 
