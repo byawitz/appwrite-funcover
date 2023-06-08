@@ -30,7 +30,7 @@ Funcover meant to be added to your current [self-hosted](https://appwrite.io/doc
 
 Before adding Funcover you'll need make sure the domain you're planning to use will have SSL, To do so we're harnessing Appwrite [custom-domain](https://appwrite.io/docs/custom-domains) feature.
 
-After adding your domain as custom-domain to any of your Appwrite project, and, the domain is no pointing to your Appwrite instance you can move to the next step.
+After adding your domain as custom-domain to any of your Appwrite project, and, the domain is now pointing to your Appwrite instance you can move to the next step.
 
 #### Adding Funcover.
 
