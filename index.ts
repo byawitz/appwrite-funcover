@@ -6,15 +6,13 @@ const app = new Hono()
 if (process.env.ALLOW_GLOBAL === 'true') {
     // Project and function route
     app.all('/:project/:functionId', async (c) => {
-        const res = await runFunction(c.req.param().project, c.req.param().functionId, c);
-        return c.json(res);
+        return await runFunction(c.req.param().project, c.req.param().functionId, c);
     });
 }
 
 // Default function
 app.all('/', async (c) => {
-    const res = await runFunction(process.env.DEFAULT_PROJECT ?? '', process.env.DEFAULT_FUNCTION ?? '', c);
-    return c.json(res);
+    return await runFunction(process.env.DEFAULT_PROJECT ?? '', process.env.DEFAULT_FUNCTION ?? '', c);
 });
 
 // Error 404
@@ -23,6 +21,6 @@ app.all('*', (c) => {
 });
 
 Bun.serve({
-    port: 3000,
+    port : 3000,
     fetch: app.fetch,
 });

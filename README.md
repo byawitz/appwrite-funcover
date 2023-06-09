@@ -122,6 +122,7 @@ Now any time you'll access the custom-domain, your default function in your defa
   "duration": 0.4
 }
 ```
+For different return formats check the [Return type](#returntype) variable.
 
 Passing data to the function can be done in any of the following four ways.
 
@@ -218,6 +219,13 @@ When sets to `true` Funcover will produce more logs at runtime.
 #### `ALLOW_GLOBAL`
 
 When sets to `true` Funcover will handle all of your function by project id.
+
+#### `RETURN_TYPE`
+How would you like to get the function output back
+- `normal` - (Default) Just return the function output as JSON.
+- `json` - Returns the `response` part from the function as parsed JSON.
+- `html` - Returns the `response` part from the function as parsed HTML.
+- `redirect` - Redirect the user the `response` returned URL.
 
 #### `ENDPOINT`
 
