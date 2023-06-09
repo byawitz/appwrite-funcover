@@ -40,7 +40,7 @@ At the bottom of the file right after the `telegraf` service, and, right before 
 
 ```yaml
   funcover:
-    image: boolcode/appwrite-funcover:0.0.1
+    image: boolcode/appwrite-funcover:0.0.3
     container_name: funcover
     restart: unless-stopped
     environment:
