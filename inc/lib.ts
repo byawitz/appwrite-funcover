@@ -13,12 +13,27 @@ async function runFunction(projectId: string, functionId: string, c: any) {
 
         })
 
-        return await res.json();
+        return response(res, c);
     } catch (e) {
         if (verbose) {
             console.log(e);
         }
         return {'error': true, message: 'general error occurs'};
+    }
+}
+
+async function response(res: Response, c: any) {
+    const json = await res.json() as any;
+
+    switch (process.env.RETURN_TYPE) {
+        case 'json':
+            return c.json(JSON.parse(json.response ?? '{}') ?? {});
+        case 'html':
+            return c.html(json.response ?? '');
+        case 'redirect':
+            return Response.redirect(json.response ?? '');
+        default:
+            return c.json(json);
     }
 }
 
