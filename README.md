@@ -20,7 +20,7 @@ This feature will help you use Appwrite functions as a target-webhook, direct ac
 - [x] Passing all request Body/Form/Json data.
 - [x] Passing `data` query variable in GET requests.
 - [x] Can be used for single or all of your functions.
-- [ ] Passing API Key.
+- [x] Passing API Key.
 
 ## Installation
 
@@ -40,7 +40,7 @@ At the bottom of the file right after the `telegraf` service, and, right before 
 
 ```yaml
   funcover:
-    image: boolcode/appwrite-funcover:0.0.3
+    image: boolcode/appwrite-funcover:0.0.4
     container_name: funcover
     restart: unless-stopped
     environment:
@@ -122,7 +122,7 @@ Now any time you'll access the custom-domain, your default function in your defa
   "duration": 0.4
 }
 ```
-For different return formats check the [Return type](#returntype) variable.
+For different return formats check the `RETURN_TYPE` variable [here](#environment-variables).
 
 Passing data to the function can be done in any of the following four ways.
 
@@ -208,6 +208,7 @@ For most use-cases that will more than enough.
 
 Also, because Funcover execute the function through Client-side, Make sure you're adding the `Any` execution permission for your function permissions.
 
+If you want your function to run as many times as you like you can add project API key with the `API_KEYS` environment variable.
 ### Environment variables
 
 _You can take a look at [.env.example](.env.example) for possible values_
@@ -219,6 +220,17 @@ When sets to `true` Funcover will produce more logs at runtime.
 #### `ALLOW_GLOBAL`
 
 When sets to `true` Funcover will handle all of your function by project id.
+
+#### `API_KEYS`
+In case you need your function to be able run as many times as necessary, You can pass here an Appwrite API key that will be used when executing the function.
+
+The format of this variable is like so:
+```
+API_KEYS=someProjectId:someProjectKey,anotherProjectId:anotherProjectKey
+```
+First add the project ID, then the full API key seperated with the `:` colons character.
+
+Then, if you want to another API key for another project, you can do so by separating these project keys with a `,` comma. 
 
 #### `FLATTEN_HEADERS`
 
