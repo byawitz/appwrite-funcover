@@ -1,6 +1,6 @@
 async function runFunction(projectId: string, functionId: string, c: any) {
     const data     = await getData(c);
-    const headers  = await getHeaders(c, projectId);
+    const headers  = await getHeaders(projectId);
     const verbose  = process.env.VERBOSE === 'true';
     const endpoint = process.env.ENDPOINT ?? 'http://appwrite/v1';
 
@@ -37,17 +37,12 @@ async function response(res: Response, c: any) {
     }
 }
 
-async function getHeaders(c: any, projectId: string) {
-    const headers = c.req.headers.toJSON();
+async function getHeaders(projectId: string) {
+    return {
+        'content-type'      : 'application/json',
+        'x-appwrite-project': projectId,
+    }
 
-    headers['Content-Type']       = 'application/json';
-    headers['x-appwrite-project'] = projectId
-
-    delete headers['content-type'];
-    delete headers['accept-encoding'];
-    delete headers['host'];
-
-    return headers;
 }
 
 async function getData(c: any) {
@@ -78,6 +73,16 @@ async function getData(c: any) {
         data['data'] = 'no_data';
     }
 
+    if (process.env.FLATTEN_HEADERS === 'true') {
+        return {
+            data: JSON.stringify({
+                data   : data.data,
+                headers: JSON.stringify(c.req.headers.toJSON()),
+
+            })
+        }
+    }
+
     return data;
 }
 
@@ -88,5 +93,6 @@ function getRawOrAll(data: any) {
 
     return JSON.stringify(data);
 }
+
 
 export {runFunction}
