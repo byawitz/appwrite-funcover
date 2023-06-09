@@ -10,8 +10,7 @@ async function runFunction(projectId: string, functionId: string, c: any) {
             verbose: verbose,
             method : 'POST',
             body   : JSON.stringify(data),
-
-        })
+        });
 
         return response(res, c);
     } catch (e) {
@@ -38,11 +37,22 @@ async function response(res: Response, c: any) {
 }
 
 async function getHeaders(projectId: string) {
-    return {
+    const headers: Record<string, string> = {
         'content-type'      : 'application/json',
         'x-appwrite-project': projectId,
-    }
+    };
 
+    const keys = (process.env.API_KEYS ?? '').split(',');
+
+    keys.forEach((key) => {
+        const current = key.split(':');
+
+        if (current[0] === projectId && current[1] !== undefined) {
+            headers['x-appwrite-key'] = current[1];
+        }
+    });
+
+    return headers;
 }
 
 async function getData(c: any) {
