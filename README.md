@@ -220,6 +220,30 @@ When sets to `true` Funcover will produce more logs at runtime.
 
 When sets to `true` Funcover will handle all of your function by project id.
 
+#### `FLATTEN_HEADERS`
+
+When sets to `true` Funcover will insert all of the request headers as `headers` property inside your function payload.
+
+Like so:
+```json
+{
+  "data": {
+    "data": {},
+    "headers": {}
+  }
+}
+```
+
+Notice your `data` will be sent recursively inside `data.data` property, and you'll to extract the data like so:
+```javascript
+    // First, Get the payload.
+    const payload = JSON.parse(req.payload);
+
+    // Second, parse the data and the headers.
+    const data    = JSON.parse(payload.data);
+    const headers = JSON.parse(payload.headers);
+```
+
 #### `RETURN_TYPE`
 How would you like to get the function output back
 - `normal` - (Default) Just return the function output as JSON.
