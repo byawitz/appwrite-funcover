@@ -1,5 +1,5 @@
-async function runFunction(projectId: string, functionId: string, c: any) {
-    const data     = await getData(c);
+async function runFunction(projectId: string, functionId: string, c: any, pathData = '') {
+    const data     = pathData !== '' ? {data: pathData} : await getData(c);
     const headers  = await getHeaders(projectId);
     const verbose  = process.env.VERBOSE === 'true';
     const endpoint = process.env.ENDPOINT ?? 'http://appwrite/v1';

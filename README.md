@@ -122,16 +122,19 @@ Now any time you'll access the custom-domain, your default function in your defa
   "duration": 0.4
 }
 ```
+
 For different return formats check the `RETURN_TYPE` variable [here](#environment-variables).
 
 Passing data to the function can be done in any of the following four ways.
 
-1. GET `data` variable. `https://custom.domain.com/?data=repoReload`
-2. POST using raw data with `application/json` content type.
-3. POST using form-data.
-4. POST using application/x-www-form-urlencoded.
+1. GET `data` variable. `https://custom.domain.com/?data=data`
+2. GET parameter route as data. `https://custom.domain.com/data`
+3. POST using raw data with `application/json` content type.
+4. POST using form-data.
+5. POST using application/x-www-form-urlencoded.
 
 #### Note for POST
+
 Funcover will check first for raw JSON data before checking for `form-data` or `application/x-www-form-urlencoded`.
 
 Also, You can use a filed named `rawData` to pass data directly to `data` key. Here's an example in JSON
@@ -209,6 +212,7 @@ For most use-cases that will more than enough.
 Also, because Funcover execute the function through Client-side, Make sure you're adding the `Any` execution permission for your function permissions.
 
 If you want your function to run as many times as you like you can add project API key with the `API_KEYS` environment variable.
+
 ### Environment variables
 
 _You can take a look at [.env.example](.env.example) for possible values_
@@ -222,21 +226,25 @@ When sets to `true` Funcover will produce more logs at runtime.
 When sets to `true` Funcover will handle all of your function by project id.
 
 #### `API_KEYS`
+
 In case you need your function to be able run as many times as necessary, You can pass here an Appwrite API key that will be used when executing the function.
 
 The format of this variable is like so:
+
 ```
 API_KEYS=someProjectId:someProjectKey,anotherProjectId:anotherProjectKey
 ```
+
 First add the project ID, then the full API key seperated with the `:` colons character.
 
-Then, if you want to another API key for another project, you can do so by separating these project keys with a `,` comma. 
+Then, if you want to another API key for another project, you can do so by separating these project keys with a `,` comma.
 
 #### `FLATTEN_HEADERS`
 
 When sets to `true` Funcover will insert all of the request headers as `headers` property inside your function payload.
 
 Like so:
+
 ```json
 {
   "data": {
@@ -247,21 +255,46 @@ Like so:
 ```
 
 Notice your `data` will be sent recursively inside `data.data` property, and you'll to extract the data like so:
+
 ```javascript
     // First, Get the payload.
-    const payload = JSON.parse(req.payload);
+const payload = JSON.parse(req.payload);
 
-    // Second, parse the data and the headers.
-    const data    = JSON.parse(payload.data);
-    const headers = JSON.parse(payload.headers);
+// Second, parse the data and the headers.
+const data    = JSON.parse(payload.data);
+const headers = JSON.parse(payload.headers);
 ```
 
 #### `RETURN_TYPE`
+
 How would you like to get the function output back
+
 - `normal` - (Default) Just return the function output as JSON.
 - `json` - Returns the `response` part from the function as parsed JSON.
 - `html` - Returns the `response` part from the function as parsed HTML.
 - `redirect` - Redirect the user the `response` returned URL.
+
+#### `PATH_AS_DATA`
+
+When sets to `true` Funcover will pass the following parameter as the function data.
+
+That means, you don't need to use the `data` variable like this
+
+```
+https://custom.domain.com/?data=data
+```
+
+You can just send it as the following route like so:
+
+```
+https://custom.domain.com/data
+```
+
+This will also work with the `ALLOW_GLOBAL` variable, so you can use it like this:
+
+```
+https://custom.domain.com/projectId/functionId/data
+```
 
 #### `ENDPOINT`
 
