@@ -36,7 +36,7 @@ async function response(res: Response, c: any) {
     }
 }
 
-async function getHeaders(projectId: string) {
+export async function getHeaders(projectId: string) {
     const headers: Record<string, string> = {
         'content-type'      : 'application/json',
         'x-appwrite-project': projectId,
@@ -55,7 +55,7 @@ async function getHeaders(projectId: string) {
     return headers;
 }
 
-async function getData(c: any) {
+export async function getData(c: any) {
     const data = {data: ''};
 
     if (c.req.method === 'POST') {
@@ -96,7 +96,7 @@ async function getData(c: any) {
     return data;
 }
 
-function getRawOrAll(data: any) {
+export function getRawOrAll(data: any) {
     if (data.rawData !== undefined) {
         return data.rawData;
     }
