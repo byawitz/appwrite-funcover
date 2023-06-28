@@ -21,12 +21,15 @@ This feature will help you use Appwrite functions as a target-webhook, direct ac
 - [x] Passing `data` query variable in GET requests.
 - [x] Can be used for single or all of your functions.
 - [x] Passing API Key.
+- [x] Access Funcover on custom path.
 
 ## Installation
 
 Funcover meant to be added to your current [self-hosted](https://appwrite.io/docs/self-hosting) Appwrite instance.
 
 #### SSL
+
+_If you're going to use Funcover on a custom path **without**_ custom domain, If so you can skip this part.
 
 Before adding Funcover you'll need make sure that the domain you're planning to use will have SSL, To do so we're harnessing Appwrite [custom-domain](https://appwrite.io/docs/custom-domains) feature.
 
@@ -40,7 +43,7 @@ At the bottom of the file right after the `telegraf` service, and, right before 
 
 ```yaml
   funcover:
-    image: boolcode/appwrite-funcover:0.0.4
+    image: boolcode/appwrite-funcover:0.0.6
     container_name: funcover
     restart: unless-stopped
     environment:
@@ -93,6 +96,39 @@ We are setting two conditions for the rule.
 
 _**Be aware** that when you're upgrading Appwrite this addition will be erased._
 </details>
+<hr> 
+
+In these two rows we just add we are forwarding our requests using a **domain**:
+
+```yaml
+      - traefik.http.routers.funcover-https.rule=Host(`custom.domain.com`) && PathPrefix(`/`)
+      - traefik.http.routers.funcover-https.rule=Host(`custom.domain.com`) && PathPrefix(`/`)
+```
+
+From Funcover version `0.0.6` you can also forward the requests using a custom path. like so:
+
+```yaml
+  funcover:
+    image: boolcode/appwrite-funcover:0.0.6
+    container_name: funcover
+    restart: unless-stopped
+    environment:
+      - ALLOW_GLOBAL=true
+      - PATH_INSTEAD_OF_DOMAIN=true
+      - PATH_PREFIX=v1/webhook
+      - DEFAULT_PROJECT=yourDefaultProjectID
+      - DEFAULT_FUNCTION=yourDefaultFunctionID
+    networks:
+      - appwrite
+      - gateway
+    labels:
+      - ...
+      - traefik.http.routers.funcover-https.rule=PathPrefix(`/v1/webhook`)
+      - ...
+      - traefik.http.routers.funcover-https.rule=PathPrefix(`/v1/webhook`)
+```
+
+Keep in mind that you'll need to add `PATH_INSTEAD_OF_DOMAIN` and `PATH_PREFIX` environment variables. check more [here](#environment-variables).
 
 Now it's time to reload our Docker Compose environment by running,
 
@@ -106,20 +142,20 @@ Now any time you'll access the custom-domain, your default function in your defa
 
 ```json
 {
-  "$id": "5e5ea5c16897e",
-  "$createdAt": "2020-10-15T06:38:00.000+00:00",
-  "$updatedAt": "2020-10-15T06:38:00.000+00:00",
+  "$id"         : "5e5ea5c16897e",
+  "$createdAt"  : "2020-10-15T06:38:00.000+00:00",
+  "$updatedAt"  : "2020-10-15T06:38:00.000+00:00",
   "$permissions": [
     "any"
   ],
-  "functionId": "5e5ea6g16897e",
-  "trigger": "http",
-  "status": "processing",
-  "statusCode": 0,
-  "response": "",
-  "stdout": "",
-  "stderr": "",
-  "duration": 0.4
+  "functionId"  : "5e5ea6g16897e",
+  "trigger"     : "http",
+  "status"      : "processing",
+  "statusCode"  : 0,
+  "response"    : "",
+  "stdout"      : "",
+  "stderr"      : "",
+  "duration"    : 0.4
 }
 ```
 
@@ -248,7 +284,7 @@ Like so:
 ```json
 {
   "data": {
-    "data": {},
+    "data"   : {},
     "headers": {}
   }
 }
@@ -309,3 +345,15 @@ Set as your default Appwrite project ID.
 #### `DEFAULT_FUNCTION`
 
 Set as your default Appwrite function ID.
+
+#### `PATH_INSTEAD_OF_DOMAIN`
+
+When sets to `true` Funcover will add the value of `PATH_PREFIX` to all is routes.
+
+For example, when `PATH_PREFIX` is sets = `v1/webhook` then Funcover will deliver the default function in `https://domain.com/v1/webhook` instead of `https://domain.com/`.
+
+All other option - like `ALLOW_GLOBAL` for example - are available to use when using this option.
+
+#### `PATH_PREFIX`
+
+Set the path to will be add as prefix to **all** Funcover requests.
