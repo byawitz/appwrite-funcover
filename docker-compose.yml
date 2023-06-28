@@ -612,7 +612,7 @@ services:
     command: 'mysqld --innodb-flush-method=fsync'
 
   redis:
-    image: redis:7.0.4-alpine
+    image: redis:7.0.6-alpine
     container_name: appwrite-redis
     <<: *x-logging
     restart: unless-stopped
@@ -656,7 +656,7 @@ services:
       - _APP_INFLUXDB_HOST
       - _APP_INFLUXDB_PORT
   funcover:
-    image: boolcode/appwrite-funcover:0.0.4
+    image: boolcode/appwrite-funcover:0.0.6
     container_name: funcover
     restart: unless-stopped
     environment:
@@ -680,7 +680,7 @@ services:
       - traefik.http.routers.funcover-https.tls=true
 
   funcover-second:
-    image: boolcode/appwrite-funcover:0.0.4
+    image: boolcode/appwrite-funcover:0.0.6
     container_name: funcover-second
     restart: unless-stopped
     environment:
@@ -702,6 +702,32 @@ services:
       - traefik.http.routers.funcover-second-https.rule=Host(`second-custom.domain.com`) && PathPrefix(`/`)
       - traefik.http.routers.funcover-second-https.service=funcover-second
       - traefik.http.routers.funcover-second-https.tls=true
+
+  funcover-third:
+    image: boolcode/appwrite-funcover:0.0.6
+    container_name: funcover-third
+    restart: unless-stopped
+    environment:
+      - ALLOW_GLOBAL=true
+      - PATH_INSTEAD_OF_DOMAIN=true
+      - PATH_PREFIX=v1/webhook
+      - DEFAULT_PROJECT=yourDefaultProjectID
+      - DEFAULT_FUNCTION=yourDefaultFunctionID
+    networks:
+      - appwrite
+      - gateway
+    labels:
+      - traefik.enable=true
+      - traefik.constraint-label-stack=appwrite
+      - traefik.docker.network=appwrite
+      - traefik.http.services.funcover-third.loadbalancer.server.port=3000
+      - traefik.http.routers.funcover-third-http.entrypoints=appwrite_web
+      - traefik.http.routers.funcover-third-http.rule=PathPrefix(`/v1/webhook`)
+      - traefik.http.routers.funcover-third-http.service=funcover-third
+      - traefik.http.routers.funcover-third-https.entrypoints=appwrite_websecure
+      - traefik.http.routers.funcover-third-https.rule=PathPrefix(`/v1/webhook`)
+      - traefik.http.routers.funcover-third-https.service=funcover-third
+      - traefik.http.routers.funcover-third-https.tls=true
 
 networks:
   gateway:

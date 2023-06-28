@@ -4,7 +4,9 @@ import {runFunction} from "./inc/lib";
 const defaultProject  = process.env.DEFAULT_PROJECT ?? '';
 const defaultFunction = process.env.DEFAULT_FUNCTION ?? '';
 
-const app = new Hono()
+const prefixedPath = process.env.PATH_INSTEAD_OF_DOMAIN === 'true' ? (process.env.PATH_PREFIX ?? '') : '';
+
+const app = new Hono().basePath(`/${prefixedPath}`);
 
 if (process.env.ALLOW_GLOBAL === 'true') {
     // Project and function route
@@ -32,6 +34,7 @@ if (process.env.PATH_AS_DATA === 'true') {
 
 // Error 404
 app.all('*', (c) => {
+    console.log(c);
     return c.json({'NotFound': true}, 404);
 });
 
