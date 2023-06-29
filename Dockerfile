@@ -1,4 +1,4 @@
-FROM oven/bun:0.6.9
+FROM oven/bun:0.6.11
 
 RUN mkdir -p /usr/server
 
