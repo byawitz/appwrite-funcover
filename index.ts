@@ -6,7 +6,7 @@ const defaultFunction = process.env.DEFAULT_FUNCTION ?? '';
 
 const prefixedPath = process.env.PATH_INSTEAD_OF_DOMAIN === 'true' ? (process.env.PATH_PREFIX ?? '') : '';
 
-const app = new Hono().basePath(`/${prefixedPath}`);
+const app = new Hono({strict: false}).basePath(`/${prefixedPath}`);
 
 if (process.env.ALLOW_GLOBAL === 'true') {
     // Project and function route
