@@ -67,7 +67,7 @@ At the bottom of the file right after the `telegraf` service, and, right before 
 
 ```yaml
   funcover:
-    image: boolcode/appwrite-funcover:0.0.7
+    image: boolcode/appwrite-funcover:0.0.8
     container_name: funcover
     restart: unless-stopped
     environment:
@@ -103,7 +103,7 @@ _Added in version `0.0.6`_
 
 ```yaml
   funcover:
-    image: boolcode/appwrite-funcover:0.0.7
+    image: boolcode/appwrite-funcover:0.0.8
     container_name: funcover
     restart: unless-stopped
     environment:
